@@ -1,6 +1,6 @@
 # Agentic-Bias-Analyzer
 
-A small project to evaluate bias in agentic systems. Contains frontend and backend components and evaluation scripts.
+A small project to evaluate bias in news articles. Contains frontend and backend components and evaluation scripts.
 
 ## Structure
 
