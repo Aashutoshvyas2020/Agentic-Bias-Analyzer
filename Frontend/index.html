@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Adversarial News Bias Analyzer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+  <h1>Adversarial News Bias Analyzer</h1>
+  <div class="subtitle">
+    One agent argues bias. One argues neutrality. A judge evaluates evidence quality.
+  </div>
+
+  <div class="input-box">
+    <label><strong>Headline</strong></label>
+    <input id="headline" placeholder="Paste headline here" />
+
+    <label class="spaced"><strong>Article Text</strong></label>
+    <textarea id="article" placeholder="Paste full article text here"></textarea>
+
+    <button id="analyzeBtn">Analyze Article</button>
+    <button id="demoBtn" class="secondary">LOAD SAMPLE ARTICLE</button>
+    <span id="status"></span>
+  </div>
+
+  <div class="results">
+    <div class="panel" id="prosecutor">
+      <h3>PROSECUTION BRIEF</h3>
+      <div class="content"></div>
+    </div>
+    
+    <div class="panel" id="arena" style="margin-top:26px;">
+      <h3>CROSS-EXAMINATION LOG</h3>
+      <div id="arenaContent"></div>
+    </div>
+
+    <div class="panel" id="defender">
+      <h3>DEFENSE BRIEF</h3>
+      <div class="content"></div>
+    </div>
+
+    <div class="panel" id="judge">
+      <h3>FINAL ADJUDICATION</h3>
+      <div class="content">
+          <div id="pressureMeter" style="display:none; margin-top:14px;">
+            <div style="font-size:11px; letter-spacing:.18em; color:#C9C9C9; margin-bottom:6px;">
+                FRAMING PRESSURE
+            </div>
+            <div style="background:#0A0A0A; border:1px solid #2B2B2B; height:10px; position:relative;">
+            <div id="pressureBar" style="height:100%; width:0%; background:#F1F1F1;"></div>
+          </div>
+    <div id="pressureLabel" style="margin-top:6px; font-size:11px; color:#C9C9C9;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    All documents are processed through adversarial rhetorical review.
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
