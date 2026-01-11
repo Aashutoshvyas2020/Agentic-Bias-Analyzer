@@ -31,6 +31,4 @@ This project is pushed to GitHub: https://github.com/Aashutoshvyas2020/Agentic-B
 
 - 2026-01-10: Added/updated frontend files and pushed changes to GitHub (commit `e529a0e`).
 
-## License
 
-This project is public. Consider adding an explicit license (MIT/Apache/BSD) if desired.
