@@ -1,4 +1,4 @@
-﻿var API_URL = (typeof window !== "undefined" && window.API_URL) ? window.API_URL : "http://localhost:3000/analyze";
+var API_URL = (typeof window !== "undefined" && window.API_URL) ? window.API_URL : "https://news-bias-analyzer.onrender.com/analyze";
 
 var btn;
 var demoBtn;
