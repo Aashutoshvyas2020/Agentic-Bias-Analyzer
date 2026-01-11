@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BiasLens — Agentic News Analyzer</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agentic News Analyzer</title>
 
-  <!-- Fonts: clean sans + crisp mono for the live feed -->
+  <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
 
+<body>
   <div class="app">
+
     <header class="topbar">
       <div class="brand">
-        <div class="brand-name">BiasLens</div>
-        <div class="brand-sub">Visible reasoning for narrative bias + claim stability</div>
+        <div class="brand-title">BIASLENS</div>
+        <div class="brand-sub">Agentic narrative analysis with paired evidence + counter-context</div>
       </div>
-      <div class="status-pill" id="statusPill">
-        <span class="dot" aria-hidden="true"></span>
-        <span id="status">Idle</span>
+      <div class="topbar-actions">
+        <span id="status" class="status"></span>
       </div>
     </header>
 
@@ -29,78 +28,105 @@
       <div class="input-grid">
         <div class="field">
           <label for="headline">Headline</label>
-          <input id="headline" placeholder="Paste headline" autocomplete="off" />
+          <input id="headline" placeholder="Paste headline here" />
         </div>
 
-        <div class="field span-2">
+        <div class="field field-wide">
           <label for="article">Article</label>
-          <textarea id="article" placeholder="Paste full article text…"></textarea>
+          <textarea id="article" placeholder="Paste full article text here..."></textarea>
         </div>
+      </div>
 
-        <div class="controls">
-          <button id="analyzeBtn" class="primary">Analyze</button>
-          <button id="demoBtn" class="secondary" type="button">Load sample</button>
-          <button id="clearBtn" class="ghost" type="button">Clear</button>
-          <div class="hint">Tip: Ctrl + Enter to run</div>
-        </div>
+      <div class="controls">
+        <button id="analyzeBtn" class="btn primary">Analyze</button>
+        <button id="demoBtn" class="btn secondary">Load Sample</button>
+        <button id="clearBtn" class="btn ghost">Clear</button>
+        <div class="hint">Tip: Ctrl + Enter to analyze • ← / → to navigate cards</div>
       </div>
     </section>
 
-    <main class="grid">
+    <main class="grid3">
 
-      <!-- Column 1: claim / reality surface (no external OSINT in this build) -->
-      <section class="col" aria-label="Reality">
+      <!-- Column 1: Reality / Claim checks (placeholder until OSINT) -->
+      <section class="col">
         <div class="col-head">
-          <div class="col-title">SCOUT</div>
-          <div class="col-desc">Checkable claim candidates (unverified)</div>
+          <div class="col-title">REALITY CHECK</div>
+          <div class="col-note">Claim candidates (no external verification yet)</div>
         </div>
-        <div id="groundContent" class="col-body muted">
-          Paste an article and hit Analyze.
+        <div id="realityContent" class="col-body muted">
+          Paste an article and run analysis. Claim candidates will appear here.
         </div>
       </section>
 
-      <!-- Column 2: synthesis verdict -->
-      <section class="col col-center" aria-label="Synthesis">
+      <!-- Column 2: Synthesis -->
+      <section class="col col-center">
         <div class="col-head">
-          <div class="col-title">ORACLE</div>
-          <div class="col-desc">Truth synthesis & pressure index</div>
+          <div class="col-title">SYNTHESIS</div>
+          <div class="col-note">Final decision + short rationale</div>
         </div>
 
-        <div class="col-body">
-        <div class="core">
-          <div class="verdict" id="verdict">—</div>
-          <div class="verdict-sub" id="verdictSub">Run an analysis to generate a verdict.</div>
+        <div class="verdict-wrap">
+          <div id="verdict" class="verdict">—</div>
 
-          <div class="meter-wrap" id="pressureWrap" style="display:none;">
-            <div class="meter-label">Narrative Pressure Index</div>
+          <div class="meter-wrap">
+            <div class="meter-label">Narrative Load</div>
             <div class="meter">
               <div id="pressureBar" class="meter-bar" style="width:0%"></div>
             </div>
-            <div id="pressureLabel" class="meter-value">0 / 100</div>
+            <div id="pressureLabel" class="meter-value">—</div>
           </div>
 
-          <div class="card" id="coreCard" style="display:none;">
-            <div class="card-title" id="keyFactor">—</div>
-            <div class="card-body" id="synthesisReason"></div>
+          <div class="divider"></div>
+
+          <div class="reason-block">
+            <div class="reason-label">Key factor</div>
+            <div id="keyFactor" class="reason-text muted">—</div>
           </div>
-        </div>
+
+          <div class="reason-block">
+            <div class="reason-label">Rationale</div>
+            <div id="synthesisReason" class="reason-text muted">—</div>
+          </div>
         </div>
       </section>
 
-      <!-- Column 3: live interaction feed -->
-      <section class="col" aria-label="Dynamics">
+      <!-- Column 3: Paired cards -->
+      <section class="col">
         <div class="col-head">
-          <div class="col-title">SPAR</div>
-          <div class="col-desc">Live adversarial reasoning stream</div>
+          <div class="col-title">PAIRED ANALYSIS</div>
+          <div class="col-note">Each card = Signal → Counter, in order</div>
         </div>
-        <div id="dynamicsFeed" class="col-body feed" aria-live="polite"></div>
+
+        <div class="carousel">
+          <div class="carousel-top">
+            <button id="prevCard" class="navbtn" aria-label="Previous">
+              <span>←</span>
+            </button>
+
+            <div class="counter">
+              <span id="cardIndex">0</span>
+              <span class="slash">/</span>
+              <span id="cardTotal">0</span>
+            </div>
+
+            <button id="nextCard" class="navbtn" aria-label="Next">
+              <span>→</span>
+            </button>
+          </div>
+
+          <div id="cardHost" class="card-host">
+            <div class="card empty">
+              <div class="empty-title">No cards yet</div>
+              <div class="empty-sub">Run an analysis to generate paired Signal → Counter cards.</div>
+            </div>
+          </div>
+        </div>
       </section>
 
     </main>
 
     <footer class="footer">
-      <div class="footer-left">Built for demos: visible reasoning, not a black-box label.</div>
-      <div class="footer-right">Web grounding (OSINT): planned module (not enabled in this build)</div>
+      Designed for fast review: evidence-first, counter-context, then synthesis.
     </footer>
   </div>
 
