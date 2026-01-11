@@ -480,7 +480,7 @@ async function analyze() {
     setBusy(false, "Network error", "error");
     clearFeed();
     feedSystem("Network error reaching backend.");
-    feedMsg("sys", "HINT", "<div class='line'>The service may be sleeping. Try again in 10–20s.</div>");
+    feedMsg("sys", "HINT", "<div class='line'>If you're using Render, the service may be sleeping. Try again in 10–20s.</div>");
   }
 }
 
