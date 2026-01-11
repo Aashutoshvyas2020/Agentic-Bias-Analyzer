@@ -110,6 +110,29 @@ body{
   font-size: 12px;
 }
 
+.source-select{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+}
+.source-select label{
+  font-size: 11px;
+  color: var(--muted2);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.source-select select{
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  outline: none;
+}
+
 .btn{
   border-radius: 10px;
   border: 1px solid var(--line);
@@ -176,6 +199,159 @@ body{
   padding-right: 4px;
 }
 .muted{ color: var(--muted); }
+
+.source-match{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.02);
+}
+.source-match a{
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.fc-card{
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.fc-card.fade{
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.fc-card.visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+.fc-card summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+.fc-card summary::-webkit-details-marker{ display:none; }
+.fc-card summary::after{
+  content: ">";
+  margin-left: auto;
+  color: var(--muted2);
+  transition: transform .2s ease;
+}
+.fc-card[open] summary::after{
+  transform: rotate(90deg);
+}
+.fc-chip{
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.03);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.fc-chip.supported{
+  border-color: rgba(91,227,138,0.5);
+  color: #5BE38A;
+}
+.fc-chip.contradicted{
+  border-color: rgba(255,107,107,0.55);
+  color: #FF6B6B;
+}
+.fc-chip.unverified{
+  border-color: rgba(168,175,187,0.45);
+  color: #A8AFBB;
+}
+.fc-claim{
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.fc-body{
+  padding: 0 12px 12px;
+  border-top: 1px solid var(--line);
+}
+.fc-confidence{
+  margin-top: 10px;
+}
+.fc-confidence-label{
+  font-size: 11px;
+  color: var(--muted2);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.fc-bar{
+  height: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+.fc-bar-fill{
+  height: 100%;
+  background: rgba(255,255,255,0.7);
+  width: 0%;
+  transition: width .35s ease;
+}
+.fc-bar-fill.supported{ background: rgba(91,227,138,0.8); }
+.fc-bar-fill.contradicted{ background: rgba(255,107,107,0.85); }
+.fc-bar-fill.unverified{ background: rgba(168,175,187,0.6); }
+.fc-evidence{
+  margin-top: 10px;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fc-section-label{
+  font-size: 11px;
+  color: var(--muted2);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.fc-link{
+  display:flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.25);
+  color: var(--ink);
+  text-decoration: none;
+}
+.fc-link span{
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.fc-why{
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.22);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.fc-note{
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--muted2);
+}
 
 .verdict-wrap{
   display:flex;
@@ -369,6 +545,20 @@ body{
   color: var(--muted2);
   font-size: 12px;
   text-align:center;
+}
+
+.claim{
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .4s ease, transform .4s ease;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #E6E6E6;
+}
+
+.claim.visible{
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Responsive */

@@ -40,7 +40,14 @@
       <div class="controls">
         <button id="analyzeBtn" class="btn primary">Analyze</button>
         <button id="demoBtn" class="btn secondary">Load Sample</button>
-        <button id="clearBtn" class="btn ghost">Clear</button>
+        <div class="source-select">
+          <label for="sourceMatch">Source match</label>
+          <select id="sourceMatch">
+            <option value="">None</option>
+            <option value="reuters">Reuters</option>
+            <option value="ap">AP</option>
+          </select>
+        </div>
         <div class="hint">Tip: Ctrl + Enter to analyze • ← / → to navigate cards</div>
       </div>
     </section>
@@ -51,10 +58,10 @@
       <section class="col">
         <div class="col-head">
           <div class="col-title">REALITY CHECK</div>
-          <div class="col-note">Claim candidates (no external verification yet)</div>
+          <div class="col-note">Fact-checked claims from trusted sources (click to expand)</div>
         </div>
         <div id="realityContent" class="col-body muted">
-          Paste an article and run analysis. Claim candidates will appear here.
+          Paste an article and run analysis. Fact-checked claims will appear here.
         </div>
       </section>
 
@@ -69,7 +76,7 @@
           <div id="verdict" class="verdict">—</div>
 
           <div class="meter-wrap">
-            <div class="meter-label">Narrative Load</div>
+            <div class="meter-label">Framing Load</div>
             <div class="meter">
               <div id="pressureBar" class="meter-bar" style="width:0%"></div>
             </div>
@@ -83,9 +90,10 @@
             <div id="keyFactor" class="reason-text muted">—</div>
           </div>
 
+          
           <div class="reason-block">
-            <div class="reason-label">Rationale</div>
-            <div id="synthesisReason" class="reason-text muted">—</div>
+            <div class="reason-label">Factcheck summary</div>
+            <div id="factcheckSummary" class="reason-text muted">&mdash;</div>
           </div>
         </div>
       </section>

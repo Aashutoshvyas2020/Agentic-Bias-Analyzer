@@ -1,19 +1,4 @@
-# Node
-node_modules/
-npm-debug.log
-
-# Python
-__pycache__/
-*.pyc
-venv/
-
-# Editor
-.vscode/
-
-# Evaluation caches and secrets
-Evaluation/
-.env
-keys/
-
-# OS
+**/node_modules/
+**/.env
 .DS_Store
+
