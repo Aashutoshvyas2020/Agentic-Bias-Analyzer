@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,10 +17,15 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-title">BIASLENS</div>
-        <div class="brand-sub">Agentic narrative analysis with paired evidence + counter-context</div>
+        <div class="brand-sub">Agentic narrative analysis with paired evidence and counter-context</div>
       </div>
       <div class="topbar-actions">
-        <span id="status" class="status"></span>
+        <div class="status-wrap">
+          <span id="status" class="status"></span>
+          <div id="statusBar" class="status-bar" aria-hidden="true">
+            <div id="statusFill" class="status-fill"></div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -40,75 +45,57 @@
       <div class="controls">
         <button id="analyzeBtn" class="btn primary">Analyze</button>
         <button id="demoBtn" class="btn secondary">Load Sample</button>
-        <div class="source-select">
-          <label for="sourceMatch">Source match</label>
-          <select id="sourceMatch">
-            <option value="">None</option>
-            <option value="reuters">Reuters</option>
-            <option value="ap">AP</option>
-          </select>
-        </div>
-        <div class="hint">Tip: Ctrl + Enter to analyze • ← / → to navigate cards</div>
+        <button id="clearBtn" class="btn ghost">Clear</button>
+        <div class="hint">Tip: Ctrl + Enter to analyze · Use left/right arrow keys to navigate cards</div>
       </div>
     </section>
 
     <main class="grid3">
 
-      <!-- Column 1: Reality / Claim checks (placeholder until OSINT) -->
+      <!-- Column A: Verification -->
       <section class="col">
         <div class="col-head">
-          <div class="col-title">REALITY CHECK</div>
-          <div class="col-note">Fact-checked claims from trusted sources (click to expand)</div>
-        </div>
-        <div id="realityContent" class="col-body muted">
-          Paste an article and run analysis. Fact-checked claims will appear here.
-        </div>
-      </section>
-
-      <!-- Column 2: Synthesis -->
-      <section class="col col-center">
-        <div class="col-head">
-          <div class="col-title">SYNTHESIS</div>
-          <div class="col-note">Final decision + short rationale</div>
+          <div class="col-title">VERIFICATION</div>
+          <div class="col-note">Claim checks with sources (details collapsed)</div>
         </div>
 
-        <div class="verdict-wrap">
-          <div id="verdict" class="verdict">—</div>
+        <div class="carousel">
+          <div class="carousel-top">
+            <button id="prevVerify" class="navbtn" aria-label="Previous">
+              <span>&lt;</span>
+            </button>
 
-          <div class="meter-wrap">
-            <div class="meter-label">Framing Load</div>
-            <div class="meter">
-              <div id="pressureBar" class="meter-bar" style="width:0%"></div>
+            <div class="counter">
+              <span id="verifyIndex">0</span>
+              <span class="slash">/</span>
+              <span id="verifyTotal">0</span>
             </div>
-            <div id="pressureLabel" class="meter-value">—</div>
+
+            <button id="nextVerify" class="navbtn" aria-label="Next">
+              <span>&gt;</span>
+            </button>
           </div>
 
-          <div class="divider"></div>
-
-          <div class="reason-block">
-            <div class="reason-label">Key factor</div>
-            <div id="keyFactor" class="reason-text muted">—</div>
-          </div>
-
-          
-          <div class="reason-block">
-            <div class="reason-label">Factcheck summary</div>
-            <div id="factcheckSummary" class="reason-text muted">&mdash;</div>
+          <div id="verificationHost" class="card-host">
+            <div class="card empty">
+              <div class="empty-title">No verification yet</div>
+              <div class="empty-sub">Run an analysis to see verification cards.</div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Column 3: Paired cards -->
+      <!-- Column B: Analysis -->
       <section class="col">
         <div class="col-head">
-          <div class="col-title">PAIRED ANALYSIS</div>
-          <div class="col-note">Each card = Signal → Counter, in order</div>
+          <div class="col-title">ANALYSIS</div>
+          <div class="col-note">Signal and counter response, in order</div>
         </div>
 
         <div class="carousel">
           <div class="carousel-top">
             <button id="prevCard" class="navbtn" aria-label="Previous">
-              <span>←</span>
+              <span>&lt;</span>
             </button>
 
             <div class="counter">
@@ -118,15 +105,58 @@
             </div>
 
             <button id="nextCard" class="navbtn" aria-label="Next">
-              <span>→</span>
+              <span>&gt;</span>
             </button>
           </div>
 
           <div id="cardHost" class="card-host">
             <div class="card empty">
               <div class="empty-title">No cards yet</div>
-              <div class="empty-sub">Run an analysis to generate paired Signal → Counter cards.</div>
+              <div class="empty-sub">Run an analysis to generate signal/counter cards.</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Column C: Summary -->
+      <section class="col col-center">
+        <div class="col-head">
+          <div class="col-title">SUMMARY</div>
+          <div class="col-note">Result, manipulation index, and verification counts</div>
+        </div>
+
+        <div class="verdict-wrap">
+          <div class="reason-label">Result</div>
+          <div id="verdict" class="verdict">&mdash;</div>
+
+          <div class="meter-wrap">
+            <div class="meter-label">Persuasion Index</div>
+            <div class="meter">
+              <div id="pressureBar" class="meter-bar" style="width:0%"></div>
+            </div>
+            <div id="pressureLabel" class="meter-value">&mdash;</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="reason-block" id="keyFactorBlock">
+            <div class="reason-label">Key factor</div>
+            <div id="keyFactor" class="reason-text muted">&mdash;</div>
+          </div>
+
+          <div class="reason-block" id="synthesisReasonBlock">
+            <div class="reason-label">Rationale</div>
+            <div id="synthesisReason" class="reason-text muted">&mdash;</div>
+          </div>
+
+          <div class="reason-block">
+            <div class="reason-label">Verification counts</div>
+            <div id="factcheckSummary" class="reason-text muted">&mdash;</div>
+          </div>
+
+          <div class="reason-block">
+            <div class="reason-label">Activity log</div>
+            <div id="logList" class="log-list muted">Waiting for analysis...</div>
           </div>
         </div>
       </section>
@@ -134,7 +164,7 @@
     </main>
 
     <footer class="footer">
-      Designed for fast review: evidence-first, counter-context, then synthesis.
+      Designed for fast review: verification, analysis, summary.
     </footer>
   </div>
 

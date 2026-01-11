@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 b9e981a07ecbc5759cbc232f009d4c3293700736 Aashutosh <aashutoshvyas2010@gmail.com> 1767940137 -0800	commit (initial): Initial commit: Add backend project
+b9e981a07ecbc5759cbc232f009d4c3293700736 4166f33fd9644d3994f4d82a5665325f84af9480 Aashutosh <aashutoshvyas2010@gmail.com> 1768106247 -0800	commit: Prepare backend for push: ignore .env; add backend files
+4166f33fd9644d3994f4d82a5665325f84af9480 6545bb4c54b2749b35439be55d347dc36b0db86d Aashutosh <aashutoshvyas2010@gmail.com> 1768106254 -0800	pull --rebase origin master (start): checkout 6545bb4c54b2749b35439be55d347dc36b0db86d
+6545bb4c54b2749b35439be55d347dc36b0db86d f6d67bfbb211466197cb26f08236616ff1bc0252 Aashutosh <aashutoshvyas2010@gmail.com> 1768106254 -0800	pull --rebase origin master (pick): Prepare backend for push: ignore .env; add backend files
+f6d67bfbb211466197cb26f08236616ff1bc0252 f6d67bfbb211466197cb26f08236616ff1bc0252 Aashutosh <aashutoshvyas2010@gmail.com> 1768106254 -0800	pull --rebase origin master (finish): returning to refs/heads/master
+f6d67bfbb211466197cb26f08236616ff1bc0252 741d894a492bdb657530d8c3ea24c855b3b4c037 Aashutosh <aashutoshvyas2010@gmail.com> 1768138918 -0800	commit: Sync backend before embedding
