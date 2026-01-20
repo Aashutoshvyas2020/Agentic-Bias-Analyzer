@@ -3,7 +3,6 @@ const {
   FRESHNESS_DEFAULT,
   MAX_RUN_QUERIES,
   VERIFICATION_TIMEOUT_MS,
-  SOURCE_MATCH_DEFAULT,
   ALLOWLIST_VERSION,
   FACTCHECK_VERDICT_PROMPT_TEMPLATE,
   ALLOWED_SOURCE_TLDS,
@@ -13,6 +12,16 @@ const { searchWeb } = require("../services/youSearch");
 
 const MAX_QUERIES_PER_CLAIM = 5;
 const MAX_SOURCES_PER_CLAIM = 6;
+const FACTCHECK_VERDICT_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["verdict", "directness", "reasoning_short"],
+  properties: {
+    verdict: { type: "string", enum: ["Supported", "Contradicted", "Unverified"] },
+    directness: { type: "number", minimum: 0, maximum: 1 },
+    reasoning_short: { type: "string", minLength: 12, maxLength: 400 }
+  }
+};
 
 function parseStrictJsonOrThrow(text, label) {
   try {
@@ -46,15 +55,6 @@ function normalizeVerdict(verdict) {
   if (v === "supported") return "Supported";
   if (v === "contradicted") return "Contradicted";
   return "Unverified";
-}
-
-function normalizeSourceHint(sourceHint) {
-  if (!sourceHint) return [];
-  var normalized = String(sourceHint).toLowerCase();
-  if (normalized === "reuters") return ["reuters"];
-  if (normalized === "ap") return ["ap"];
-  if (normalized === "reuters_ap" || normalized === "reuters/ap") return ["reuters", "ap"];
-  return [];
 }
 
 function domainFromUrl(url) {
@@ -154,7 +154,11 @@ async function evaluateVerdict(ai, model, claimText, results, allowedSources) {
 
   var response = await ai.models.generateContent({
     model: model,
-    contents: prompt
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseJsonSchema: FACTCHECK_VERDICT_SCHEMA
+    }
   });
 
   var json = parseStrictJsonOrThrow(response.text, "FactCheck Verdict");
@@ -162,21 +166,6 @@ async function evaluateVerdict(ai, model, claimText, results, allowedSources) {
   var directness = Number(json.directness);
   if (Number.isNaN(directness)) directness = 0.3;
   var reasoning = String(json.reasoning_short || "").trim();
-
-  if (!reasoning || reasoning.length < 12) {
-    var retryPrompt = "Your previous output did not include a sufficient reasoning_short. " +
-      "Return ONLY valid JSON with reasoning_short as 1-2 sentences (min 12 characters).\n\n" +
-      prompt;
-    var retryResponse = await ai.models.generateContent({
-      model: model,
-      contents: retryPrompt
-    });
-    var retryJson = parseStrictJsonOrThrow(retryResponse.text, "FactCheck Verdict Retry");
-    verdict = normalizeVerdict(retryJson.verdict);
-    directness = Number(retryJson.directness);
-    if (Number.isNaN(directness)) directness = 0.3;
-    reasoning = String(retryJson.reasoning_short || "").trim();
-  }
 
   return {
     verdict: verdict,
@@ -186,12 +175,12 @@ async function evaluateVerdict(ai, model, claimText, results, allowedSources) {
 }
 
 async function checkSourceMatch(opts) {
-  var sources = normalizeSourceHint(opts.sourceHint || SOURCE_MATCH_DEFAULT);
-  if (!sources.length) {
+  var headline = String(opts.headline || "").trim();
+  if (!headline) {
     return { status: "skipped", canonical_url: "" };
   }
 
-  var headline = opts.headline || "";
+  var sources = ["reuters", "ap"];
   var match = { status: "not_found", canonical_url: "" };
   for (var i = 0; i < sources.length; i++) {
     var site = sources[i] === "reuters" ? "reuters.com" : "apnews.com";
@@ -240,7 +229,7 @@ function normalizeQueries(claim) {
   return normalized.slice(0, MAX_QUERIES_PER_CLAIM);
 }
 
-function collectEvidence(results, progress) {
+function collectEvidence(results) {
   var evidence = [];
   var seenDomains = {};
   var seenUrls = {};
@@ -263,9 +252,6 @@ function collectEvidence(results, progress) {
       source_domain: host,
       excerpt: truncate(excerpt, 240)
     });
-    if (progress && typeof progress.push === "function" && item.content_markdown_if_any) {
-      progress.push("Live crawling: " + host);
-    }
     seenDomains[host] = true;
     seenUrls[item.url] = true;
   }
@@ -296,12 +282,10 @@ async function runFactCheck(opts) {
   var model = opts.model;
   var logger = opts.logger || console;
   var freshness = opts.freshness || FRESHNESS_DEFAULT;
-  var progress = opts.progress;
 
   var start = Date.now();
   var budget = createBudget();
   var sourceMatch = await checkSourceMatch({
-    sourceHint: opts.sourceHint,
     headline: opts.headline,
     freshness: freshness,
     budget: budget,
@@ -331,9 +315,6 @@ async function runFactCheck(opts) {
     }
 
     var claim = claims[i];
-    if (progress && typeof progress.push === "function") {
-      progress.push("Checking claim " + (i + 1) + " of " + claims.length + "...");
-    }
     var queryList = normalizeQueries(claim);
     var queriesUsed = [];
     var aggregated = [];
@@ -350,9 +331,6 @@ async function runFactCheck(opts) {
       }
 
       var query = queryList[q];
-      if (progress && typeof progress.push === "function") {
-        progress.push("Searching for: " + truncate(query, 80));
-      }
       try {
         var result = await searchWeb(query, {
           count: RESULTS_PER_CLAIM,
@@ -368,9 +346,6 @@ async function runFactCheck(opts) {
         queriesUsed.push(query);
         if (result.results && result.results.length) {
           aggregated = aggregated.concat(result.results);
-          if (progress && typeof progress.push === "function") {
-            progress.push("Search returned " + result.results.length + " results.");
-          }
         }
       } catch (err) {
         if (logger && logger.warn) {
@@ -393,15 +368,7 @@ async function runFactCheck(opts) {
       continue;
     }
 
-    var evidence = collectEvidence(aggregated, progress);
-    if (progress && typeof progress.push === "function") {
-      if (evidence.length) {
-        var domains = evidence.map(function(item) { return item.source_domain; }).join(", ");
-        progress.push("Sources selected: " + domains);
-      } else {
-        progress.push("No allowed sources found for this claim.");
-      }
-    }
+    var evidence = collectEvidence(aggregated);
 
     if (!aggregated.length) {
       results.push({
@@ -434,9 +401,6 @@ async function runFactCheck(opts) {
       notes: ""
     });
 
-    if (progress && typeof progress.push === "function") {
-      progress.push("Claim " + (i + 1) + " verdict: " + verdictResult.verdict);
-    }
   }
 
   var runtime = Date.now() - start;

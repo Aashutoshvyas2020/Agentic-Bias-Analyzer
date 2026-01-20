@@ -3,6 +3,33 @@ const {
   CLAIM_PICKER_PROMPT_TEMPLATE,
   CLAIM_PICKER_THINKING_LEVEL
 } = require("../config/controlBoard");
+const CLAIM_PICKER_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["claims"],
+  properties: {
+    claims: {
+      type: "array",
+      minItems: 1,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["id", "claim", "claim_type", "entities", "time_scope", "recommended_queries"],
+        properties: {
+          id: { type: "string", minLength: 1, maxLength: 20 },
+          claim: { type: "string", minLength: 8, maxLength: 220 },
+          claim_type: {
+            type: "string",
+            enum: ["government", "health", "economy", "legal", "security", "international", "science", "education", "other"]
+          },
+          entities: { type: "array", items: { type: "string" } },
+          time_scope: { type: "string" },
+          recommended_queries: { type: "array", items: { type: "string" }, minItems: 1 }
+        }
+      }
+    }
+  }
+};
 
 function parseStrictJsonOrThrow(text, label) {
   try {
@@ -76,7 +103,9 @@ async function pickClaims(opts) {
     model: model,
     contents: prompt,
     config: {
-      thinkingLevel: CLAIM_PICKER_THINKING_LEVEL
+      thinkingLevel: CLAIM_PICKER_THINKING_LEVEL,
+      responseMimeType: "application/json",
+      responseJsonSchema: CLAIM_PICKER_SCHEMA
     }
   });
 
