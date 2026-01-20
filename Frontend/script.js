@@ -1237,7 +1237,7 @@ function bindDom() {
   imageAnalysisHost = document.getElementById("imageAnalysisHost");
 
   return !!(
-    analyzeBtn && demoBtn && clearBtn && fetchUrlBtn &&
+    analyzeBtn && demoBtn && clearBtn &&
     headlineInput && articleInput &&
     statusEl &&
     verificationHost && verifNav && prevClaim && nextClaim && claimIndicator &&
@@ -1350,6 +1350,7 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
+
 
 
 
