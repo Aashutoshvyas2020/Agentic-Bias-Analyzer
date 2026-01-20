@@ -1,6 +1,6 @@
 var API_URL = (typeof window !== "undefined" && window.API_URL)
   ? window.API_URL
-  : "https://echoes-backend-z2sf.onrender.com/analyze";
+  : "https://news-bias-analyzer.onrender.com/analyze";
 
 var analyzeBtn;
 var demoBtn;
@@ -1350,5 +1350,6 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
+
 
 
