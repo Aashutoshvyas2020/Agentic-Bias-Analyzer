@@ -1,6 +1,6 @@
 var API_URL = (typeof window !== "undefined" && window.API_URL)
   ? window.API_URL
-  : "http://localhost:3000/analyze";
+  : "https://echoes-backend-z2sf.onrender.com/analyze";
 
 var analyzeBtn;
 var demoBtn;
@@ -1350,4 +1350,5 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
+
 
