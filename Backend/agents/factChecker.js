@@ -24,17 +24,27 @@ const FACTCHECK_VERDICT_SCHEMA = {
 };
 
 function parseStrictJsonOrThrow(text, label) {
+  var raw = String(text || "").trim();
   try {
-    return JSON.parse(text);
+    return JSON.parse(raw);
   } catch (err) {
+    var cleaned = raw.replace(/,(\s*[}\]])/g, "$1");
+    if (cleaned !== raw) {
+      try {
+        return JSON.parse(cleaned);
+      } catch (err2) {
+        // fall through to error
+      }
+    }
+
     var message =
       label + " returned invalid JSON.\n\n" +
-      "Raw output starts with: " + String(text).slice(0, 120) + "\n\n" +
-      "Full raw output:\n" + String(text);
+      "Raw output starts with: " + raw.slice(0, 120) + "\n\n" +
+      "Full raw output:\n" + raw;
 
     var e = new Error(message);
     e.name = "InvalidModelJSON";
-    e.raw = text;
+    e.raw = raw;
     throw e;
   }
 }
